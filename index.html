@@ -1749,7 +1749,7 @@ function changeLevel(lv){
   renderCharNav();             // Viết chữ: reset về chữ đầu
   buildQuizPool();             // Kiểm tra: pool từ theo trình độ
   answered = false; nextQuiz(); // Kiểm tra: câu hỏi mới theo trình độ
-  updateExamHero();              // Đề thi: cập nhật tiêu đề
+  updateExamHero();              // Đề thi: cập nhật tiêu đề + picker
   populatePracTopicFilter(); buildPracPool(); pracAnswered=false; showPracQuestion(); // Luyện tập: đồng bộ theo trình độ
   renderGoals();
 }
@@ -1766,17 +1766,17 @@ function renderGoals(){
     {icon:'🧠', text:'Trả lời đúng 10 câu quiz', done:false},
   ];
   g.innerHTML = goals.map(go=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-    <span style="font-size:1.2rem">${go.icon}</span>
-    <span style="font-size:.82rem;flex:1">${go.text}</span>
-    <span style="font-size:.75rem;color:var(--muted)">0%</span>
-  </div>`).join('');
+    <span style="font-size:1.2rem">${go.icon}<\/span>
+    <span style="font-size:.82rem;flex:1">${go.text}<\/span>
+    <span style="font-size:.75rem;color:var(--muted)">0%<\/span>
+  <\/div>`).join('');
   const now = new Date();
   document.getElementById('todayDate').textContent = now.toLocaleDateString('vi-VN',{weekday:'long',day:'numeric',month:'numeric'});
 }
 
 function renderTip(){
   const t = TIPS[Math.floor(Math.random()*TIPS.length)];
-  document.getElementById('tipBox').innerHTML = `<p style="font-size:.86rem;line-height:1.6;color:var(--ink)">${t}</p>`;
+  document.getElementById('tipBox').innerHTML = `<p style="font-size:.86rem;line-height:1.6;color:var(--ink)">${t}<\/p>`;
 }
 
 // ═══════════════════════════════════════════
@@ -1785,7 +1785,7 @@ function renderTip(){
 function initSceneSelect(){
   const sel = document.getElementById('sceneSelect');
   const scenes = SCENES[currentLevel] || SCENES[1];
-  sel.innerHTML = Object.entries(scenes).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  sel.innerHTML = Object.entries(scenes).map(([k,v])=>`<option value="${k}">${v.label}<\/option>`).join('');
   changeScene(Object.keys(scenes)[0]);
 }
 
@@ -1809,14 +1809,14 @@ function addMsg(role, cn, py, vi){
   // Safe data-text: escape single quotes
   const safeText = cn.replace(/'/g,"&#39;");
   const ttsBtn = (role === 'teacher' && cn)
-    ? `<button class="tts-btn" onclick="speakBubble(this)" data-text="${safeText}" title="Nghe phát âm">🔊</button>`
+    ? `<button class="tts-btn" onclick="speakBubble(this)" data-text="${safeText}" title="Nghe phát âm">🔊<\/button>`
     : '';
-  d.innerHTML = `<div class="msg-label">${role==='teacher'?'👩‍🏫 Giáo viên':'🧑‍🎓 Bạn'}</div>
+  d.innerHTML = `<div class="msg-label">${role==='teacher'?'👩‍🏫 Giáo viên':'🧑‍🎓 Bạn'}<\/div>
     <div class="bubble">
-      <div class="b-cn">${cn} ${ttsBtn}</div>
-      ${py?`<div class="b-py">${py}</div>`:''}
-      ${vi?`<div class="b-vi">${vi}</div>`:''}
-    </div>`;
+      <div class="b-cn">${cn} ${ttsBtn}<\/div>
+      ${py?`<div class="b-py">${py}<\/div>`:''}
+      ${vi?`<div class="b-vi">${vi}<\/div>`:''}
+    <\/div>`;
   wrap.appendChild(d);
   wrap.scrollTop = wrap.scrollHeight;
   chatHistory.push({role:role==='teacher'?'assistant':'user', content:`${cn}${vi?' ('+vi+')':''}`});
@@ -1837,14 +1837,14 @@ function showTyping(){
   const wrap = document.getElementById('chatMsgs');
   const d = document.createElement('div');
   d.className = 'msg teacher'; d.id = 'typing';
-  d.innerHTML = `<div class="msg-label">👩‍🏫 Giáo viên</div><div class="bubble typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  d.innerHTML = `<div class="msg-label">👩‍🏫 Giáo viên<\/div><div class="bubble typing-bubble"><div class="dot"><\/div><div class="dot"><\/div><div class="dot"><\/div><\/div>`;
   wrap.appendChild(d); wrap.scrollTop = wrap.scrollHeight;
 }
 
 function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
 
 function renderSugs(arr){
-  document.getElementById('suggests').innerHTML = arr.map(s=>`<button class="sug" onclick="useSug(\`${s}\`)">${s}</button>`).join('');
+  document.getElementById('suggests').innerHTML = arr.map(s=>`<button class="sug" onclick="useSug(\`${s}\`)">${s}<\/button>`).join('');
 }
 
 function useSug(t){ document.getElementById('chatIn').value=t; sendMsg(); }
@@ -1913,7 +1913,7 @@ function renderVocabTopics(filterText=''){
   tabs.innerHTML = topics.map((t,i)=>{
     const active = (t === currentTopic) || (!currentTopic && i===0);
     if(active && !currentTopic) currentTopic = t;
-    return `<button class="ttab${active?' on':''}" onclick="selectTopic('${t.replace(/'/g,"\'")}')">${t}</button>`;
+    return `<button class="ttab${active?' on':''}" onclick="selectTopic('${t.replace(/'/g,"\'")}')">${t}<\/button>`;
   }).join('');
 
   // Count label
@@ -1972,20 +1972,20 @@ function renderVocab(){
   const grid = document.getElementById('vocabGrid');
   grid.innerHTML = items.map(w=>`
     <div class="vcard" onclick="vcardClick(event,this,'${w.c.replace(/'/g,"\\'")}','${w.ex.replace(/'/g,"\\'")}')">
-      <div class="vc-hsk" style="background:${color}">HSK ${currentLevel}</div>
-      <button class="vc-speak-btn" onclick="event.stopPropagation();speakChinese('${w.c.replace(/'/g,"\\'")}')" title="Nghe phát âm">🔊</button>
+      <div class="vc-hsk" style="background:${color}">HSK ${currentLevel}<\/div>
+      <button class="vc-speak-btn" onclick="event.stopPropagation();speakChinese('${w.c.replace(/'/g,"\\'")}')" title="Nghe phát âm">🔊<\/button>
       <div class="front">
-        <div class="vc-char">${w.c}</div>
-        <div class="vc-py">${w.p}</div>
-        <div class="vc-vi">${w.v}</div>
-      </div>
+        <div class="vc-char">${w.c}<\/div>
+        <div class="vc-py">${w.p}<\/div>
+        <div class="vc-vi">${w.v}<\/div>
+      <\/div>
       <div class="back">
-        <div class="vc-py" style="margin-bottom:4px">${w.p}</div>
-        <div class="vc-ex">${w.ex}</div>
-        <div class="vc-exvi">${w.exv}</div>
-        <button class="vc-speak-btn vc-speak-ex" onclick="event.stopPropagation();speakChinese('${w.ex.replace(/'/g,"\\'")}')" title="Nghe câu ví dụ">🔊 Nghe câu</button>
-      </div>
-    </div>`).join('');
+        <div class="vc-py" style="margin-bottom:4px">${w.p}<\/div>
+        <div class="vc-ex">${w.ex}<\/div>
+        <div class="vc-exvi">${w.exv}<\/div>
+        <button class="vc-speak-btn vc-speak-ex" onclick="event.stopPropagation();speakChinese('${w.ex.replace(/'/g,"\\'")}')" title="Nghe câu ví dụ">🔊 Nghe câu<\/button>
+      <\/div>
+    <\/div>`).join('');
   applyVocabToggles();
 }
 
@@ -2020,18 +2020,18 @@ function renderGrammar(){
   document.getElementById('grammarList').innerHTML = data.map((g,i)=>`
     <div class="grammar-item">
       <div class="grammar-q" onclick="toggleGrammar(${i})">
-        <span>${i+1}. ${g.title}</span><span id="garr${i}">▼</span>
-      </div>
+        <span>${i+1}. ${g.title}<\/span><span id="garr${i}">▼<\/span>
+      <\/div>
       <div class="grammar-body" id="gbody${i}">
-        <div class="pattern">${g.pattern}</div>
+        <div class="pattern">${g.pattern}<\/div>
         ${g.exs.map(e=>`<div class="g-ex">
-          <div class="g-cn">${e.cn}</div>
-          <div class="g-py">${e.py}</div>
-          <div class="g-vi">${e.vi}</div>
-        </div>`).join('')}
-        <div class="g-note">📝 ${g.note}</div>
-      </div>
-    </div>`).join('');
+          <div class="g-cn">${e.cn}<\/div>
+          <div class="g-py">${e.py}<\/div>
+          <div class="g-vi">${e.vi}<\/div>
+        <\/div>`).join('')}
+        <div class="g-note">📝 ${g.note}<\/div>
+      <\/div>
+    <\/div>`).join('');
 }
 
 function toggleGrammar(i){
@@ -2046,7 +2046,7 @@ function toggleGrammar(i){
 // ═══════════════════════════════════════════
 function renderCharNav(){
   const nav = document.getElementById('charNav');
-  nav.innerHTML = CHARS.map((c,i)=>`<button class="cnavbtn ${i===currentCharIdx?'on':''}" onclick="setChar(${i})">${c.c}</button>`).join('');
+  nav.innerHTML = CHARS.map((c,i)=>`<button class="cnavbtn ${i===currentCharIdx?'on':''}" onclick="setChar(${i})">${c.c}<\/button>`).join('');
   renderCurrentChar();
 }
 
@@ -2060,7 +2060,7 @@ function renderCurrentChar(){
   document.getElementById('ciStrokes').textContent = c.n;
   clearCanvas();
   const so = document.getElementById('strokeOrder');
-  so.innerHTML = c.steps.map((s,i)=>`<div class="sstep vis">${s}</div>`).join('');
+  so.innerHTML = c.steps.map((s,i)=>`<div class="sstep vis">${s}<\/div>`).join('');
 }
 
 function clearCanvas(){
@@ -2110,11 +2110,11 @@ function renderReadingLevel(){
         style="position:absolute;top:10px;right:10px;background:var(--red);border:none;border-radius:50%;
         width:30px;height:30px;color:#fff;font-size:.9rem;cursor:pointer;display:flex;align-items:center;
         justify-content:center;opacity:.7;transition:opacity .2s" onmouseover="this.style.opacity=1"
-        onmouseout="this.style.opacity=.7" title="Nghe phát âm">🔊</button>
-      <div class="r-cn" style="cursor:pointer" onclick="speakChinese('${r.cn.replace(/'/g,"\\'")}')">${r.cn}</div>
-      <div class="r-py">${r.py}</div>
-      <div class="r-vi">${r.vi}</div>
-    </div>`).join('');
+        onmouseout="this.style.opacity=.7" title="Nghe phát âm">🔊<\/button>
+      <div class="r-cn" style="cursor:pointer" onclick="speakChinese('${r.cn.replace(/'/g,"\\'")}')">${r.cn}<\/div>
+      <div class="r-py">${r.py}<\/div>
+      <div class="r-vi">${r.vi}<\/div>
+    <\/div>`).join('');
 }
 
 // ═══════════════════════════════════════════
@@ -2145,7 +2145,7 @@ function nextQuiz(){
   if(mode < 0.33){
     // Char → meaning
     document.getElementById('qType').textContent = 'Nghĩa của từ này là gì?';
-    document.getElementById('qChar').innerHTML = w.c + ' <button onclick="speakChinese(this.dataset.t)" data-t="' + w.c + '" style="background:none;border:none;font-size:1.4rem;cursor:pointer;vertical-align:middle;opacity:.6" title="Nghe">🔊</button>';
+    document.getElementById('qChar').innerHTML = w.c + ' <button onclick="speakChinese(this.dataset.t)" data-t="' + w.c + '" style="background:none;border:none;font-size:1.4rem;cursor:pointer;vertical-align:middle;opacity:.6" title="Nghe">🔊<\/button>';
     document.getElementById('qChar').style.fontSize = w.c.length>3?'1.8rem':'3rem';
     document.getElementById('qHint').textContent = `Pinyin: ${w.p}`;
     // Tự động đọc câu hỏi khi hiện lên
@@ -2177,7 +2177,7 @@ function nextQuiz(){
   document.getElementById('qOpts').innerHTML = opts.map(o=>{
     const lbl = getLabel(o);
     const isCorrect = lbl===correct;
-    return `<button class="qopt" onclick="checkAnswer(this,${isCorrect},'${w.c}','${w.p}','${w.v}')">${lbl}</button>`;
+    return `<button class="qopt" onclick="checkAnswer(this,${isCorrect},'${w.c}','${w.p}','${w.v}')">${lbl}<\/button>`;
   }).join('');
 }
 
@@ -2234,10 +2234,191 @@ function renderAchievements(){
   ];
   document.getElementById('achGrid').innerHTML = achs.map(a=>`
     <div class="ach ${a.earned?'earned':''}">
-      <div class="ach-icon">${a.icon}</div>
-      <div class="ach-name">${a.name}</div>
-      <div class="ach-desc">${a.desc}</div>
-    </div>`).join('');
+      <div class="ach-icon">${a.icon}<\/div>
+      <div class="ach-name">${a.name}<\/div>
+      <div class="ach-desc">${a.desc}<\/div>
+    <\/div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+//  EXPORT / SYNC DATA
+// ═══════════════════════════════════════════
+
+// ── Export HTML kèm toàn bộ customVocab (bake trực tiếp vào code, không dùng localStorage) ──
+function exportHTMLWithData(){
+  if(!customVocab.length){ alert('Chưa có từ vựng nào để xuất! Hãy import CSV trước.'); return; }
+
+  showExportStatusHTV('⏳ Đang chuẩn bị file HTML...', 'blue');
+
+  // Đọc lại HTML gốc từ chính URL trang (đáng tin cậy hơn outerHTML, vốn có thể
+  // bị khung xem trước/sandbox làm sai lệch hoặc thiếu nội dung script).
+  fetch(window.location.href)
+    .then(function(r){ return r.text(); })
+    .then(function(rawHtml){ buildAndDownloadHTV(rawHtml, false); })
+    .catch(function(){
+      // Dự phòng: dùng DOM hiện tại nếu fetch không khả dụng (vd: mở file:// trực tiếp)
+      buildAndDownloadHTV(document.documentElement.outerHTML, true);
+    });
+}
+
+function buildAndDownloadHTV(html, isFallback){
+  var jsonData = JSON.stringify(customVocab);
+  var patched = html.replace(
+    /let customVocab\s*=\s*\[\s*\];.*$/m,
+    'let customVocab = ' + jsonData + ';  // baked-in export'
+  );
+  if(patched === html){
+    showExportStatusHTV('⚠️ Không tìm thấy vị trí để nhúng data. Hãy thử xuất JSON thay thế.', 'red');
+    return;
+  }
+
+  var BOM  = '\uFEFF';
+  var blob = new Blob([BOM + patched], {type:'text/html;charset=utf-8'});
+  var url  = URL.createObjectURL(blob);
+  var filename = 'hoc-tieng-trung-' + new Date().toISOString().slice(0,10) + '.html';
+
+  try{
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    showExportStatusHTV(
+      '✅ Đã xuất HTML kèm ' + customVocab.length + ' từ vựng!' +
+      (isFallback ? ' (chế độ dự phòng)' : '') +
+      ' Nếu trình duyệt không tự tải, dùng nút "Mở trong tab mới" bên dưới.',
+      'green'
+    );
+  }catch(e){
+    showExportStatusHTV('⚠️ Trình duyệt chặn tải tự động. Nhấn "Mở trong tab mới" để lưu thủ công (Ctrl+S).', 'red');
+  }
+
+  // Luôn hiện thêm link dự phòng — một số khung xem trước (vd: trong ứng dụng chat)
+  // chặn tải file blob: trực tiếp và báo "Nội dung này bị chặn".
+  showManualDownloadLinkHTV(url, filename);
+}
+
+function showExportStatusHTV(msg, color){
+  var el = document.getElementById('htvExportStatus');
+  if(!el) { alert(msg); return; }
+  var bg = color==='green' ? '#d5f5e3' : color==='red' ? '#fadbd8' : '#dbeafe';
+  var fg = color==='green' ? '#1a7a3c' : color==='red' ? '#922b21' : '#1e3a8a';
+  var bd = color==='green' ? 'var(--green)' : color==='red' ? 'var(--red)' : '#3b82f6';
+  el.style.display    = 'block';
+  el.style.background = bg;
+  el.style.color      = fg;
+  el.style.border     = '1px solid ' + bd;
+  el.textContent = msg;
+}
+
+function showManualDownloadLinkHTV(url, filename){
+  var box = document.getElementById('htvManualDownloadBox');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 'htvManualDownloadBox';
+    box.style.cssText = 'margin-top:10px;padding:12px 14px;background:#fef3c7;'
+      + 'border:1px solid #f0c040;border-radius:10px;font-size:.8rem;color:#92400e;';
+    var statusEl = document.getElementById('htvExportStatus');
+    if(statusEl) statusEl.insertAdjacentElement('afterend', box);
+  }
+  box.innerHTML =
+    '⚠️ <strong>Nếu nút tải ở trên không hoạt động</strong> (ví dụ bạn đang xem app trong khung xem trước '
+    + 'của ứng dụng chat), hãy thử:<br><br>'
+    + '<a href="' + url + '" target="_blank" rel="noopener" '
+    + 'style="display:inline-block;padding:7px 16px;border-radius:8px;background:#d4a017;'
+    + 'color:#fff;text-decoration:none;font-weight:700;font-size:.8rem;margin-right:8px">'
+    + '🔗 Mở HTML trong tab mới</a> rồi nhấn <strong>Ctrl+S</strong> (Cmd+S trên Mac) để lưu file.<br><br>'
+    + '💡 Cách chắc chắn nhất: mở app trực tiếp trong Chrome/Edge/Safari (không qua khung xem trước) rồi thử lại.';
+}
+
+// ── Export JSON backup ──
+function exportJSON(){
+  if(!customVocab.length){
+    alert('Chưa có từ vựng nào để xuất!'); return;
+  }
+
+  const backup = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    totalWords: customVocab.length,
+    appName: 'Học Tiếng Trung',
+    data: customVocab
+  };
+
+  const BOM = '\uFEFF';
+  const json = JSON.stringify(backup, null, 2);
+  const blob = new Blob([BOM + json], {type: 'application/json;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'hoc-tieng-trung-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showJsonStatus('✅ Đã xuất ' + customVocab.length + ' từ. Lưu file vào Google Drive / thiết bị để dùng sau!', 'green');
+}
+
+// ── Import JSON backup ──
+function importJSON(input){
+  const file = input.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const raw = e.target.result.replace(/^\uFEFF/, ''); // strip BOM
+      const backup = JSON.parse(raw);
+
+      // Validate
+      if(!backup.data || !Array.isArray(backup.data)){
+        showJsonStatus('❌ File JSON không hợp lệ. Hãy dùng file được xuất từ app này.', 'red');
+        return;
+      }
+
+      const incoming = backup.data;
+      const existSet = new Set(customVocab.map(w=>w.c));
+      let added = 0;
+
+      incoming.forEach(w => {
+        if(w.c && w.p && w.v && !existSet.has(w.c)){
+          customVocab.push(w);
+          existSet.add(w.c);
+          added++;
+        }
+      });
+
+      injectCustomIntoVocab();
+      buildQuizPool();
+      renderCustomVocabList();
+      populatePracTopicFilter();
+
+      const skipped = incoming.length - added;
+      let msg = '✅ Đã nạp ' + added + ' từ từ file backup!';
+      if(skipped > 0) msg += ' (bỏ qua ' + skipped + ' từ đã có sẵn)';
+      msg += '\nNgày xuất: ' + (backup.exportDate ? new Date(backup.exportDate).toLocaleDateString('vi-VN') : 'không rõ');
+      showJsonStatus(msg, 'green');
+
+    } catch(err) {
+      showJsonStatus('❌ Lỗi đọc file: ' + err.message, 'red');
+    }
+
+    // Reset input để có thể import lại cùng file
+    input.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function showJsonStatus(msg, color){
+  const el = document.getElementById('jsonStatus');
+  if(!el) return;
+  el.style.display = 'block';
+  el.style.color = color === 'green' ? '#1e8449' : '#922b21';
+  el.textContent = msg;
+  if(color === 'green') setTimeout(()=>el.style.display='none', 6000);
 }
 
 // ═══════════════════════════════════════════
@@ -2245,7 +2426,7 @@ function renderAchievements(){
 // ═══════════════════════════════════════════
 
 let importedVocab = {};  // preview buffer: { "level|topic": [{c,p,v,ex,exv},...] }
-let customVocab   = JSON.parse(localStorage.getItem('htv_custom') || '[]');
+let customVocab   = [];  // in-memory only — artifacts/Claude.ai block localStorage
 
 // ── Parse CSV text ──
 function parseCSVText(raw) {
@@ -2301,13 +2482,13 @@ function previewCSV() {
   if (tbody) {
     tbody.innerHTML = words.slice(0, 25).map(w =>
       '<tr style="border-bottom:1px solid var(--border)">' +
-      '<td style="padding:5px 8px;font-family:\'Noto Serif SC\',serif;font-weight:700;color:var(--red)">' + w.c + '</td>' +
-      '<td style="padding:5px 8px;color:var(--blue)">' + w.p + '</td>' +
-      '<td style="padding:5px 8px;color:var(--muted)">' + w.v + '</td>' +
-      '<td style="padding:5px 8px;text-align:center"><span style="background:var(--red);color:#fff;border-radius:8px;padding:1px 6px;font-size:.65rem">HSK' + w.lv + '</span></td>' +
-      '<td style="padding:5px 8px;font-size:.72rem;color:var(--muted)">' + w.topic + '</td>' +
-      '</tr>'
-    ).join('') + (words.length > 25 ? '<tr><td colspan="5" style="padding:6px;text-align:center;color:var(--muted);font-style:italic">... và ' + (words.length - 25) + ' từ nữa</td></tr>' : '');
+      '<td style="padding:5px 8px;font-family:\'Noto Serif SC\',serif;font-weight:700;color:var(--red)">' + w.c + '<\/td>' +
+      '<td style="padding:5px 8px;color:var(--blue)">' + w.p + '<\/td>' +
+      '<td style="padding:5px 8px;color:var(--muted)">' + w.v + '<\/td>' +
+      '<td style="padding:5px 8px;text-align:center"><span style="background:var(--red);color:#fff;border-radius:8px;padding:1px 6px;font-size:.65rem">HSK' + w.lv + '<\/span><\/td>' +
+      '<td style="padding:5px 8px;font-size:.72rem;color:var(--muted)">' + w.topic + '<\/td>' +
+      '<\/tr>'
+    ).join('') + (words.length > 25 ? '<tr><td colspan="5" style="padding:6px;text-align:center;color:var(--muted);font-style:italic">... và ' + (words.length - 25) + ' từ nữa<\/td><\/tr>' : '');
   }
   if (previewEl) previewEl.style.display = 'block';
 
@@ -2339,7 +2520,6 @@ function confirmImport() {
     });
   });
 
-  localStorage.setItem('htv_custom', JSON.stringify(customVocab));
   injectCustomIntoVocab();
   buildQuizPool();
 
@@ -2392,30 +2572,29 @@ function renderCustomVocabList() {
   const body = document.getElementById('customVocabBody');
   if (!body) return;
   if (!customVocab.length) {
-    body.innerHTML = '<p style="font-size:.82rem;color:var(--muted);text-align:center;padding:16px 0">Chưa có từ vựng nào được import. Upload file CSV để bắt đầu!</p>';
+    body.innerHTML = '<p style="font-size:.82rem;color:var(--muted);text-align:center;padding:16px 0">Chưa có từ vựng nào được import. Upload file CSV để bắt đầu!<\/p>';
     return;
   }
   const groups = {};
   customVocab.forEach(w => { const t = w.topic || 'Tùy chỉnh'; if (!groups[t]) groups[t] = []; groups[t].push(w); });
-  let html = '<p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Tổng: <strong>' + customVocab.length + '</strong> từ đã import</p>';
+  let html = '<p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Tổng: <strong>' + customVocab.length + '<\/strong> từ đã import<\/p>';
   Object.entries(groups).forEach(([topic, words]) => {
-    html += '<div style="margin-bottom:12px"><div style="font-size:.78rem;font-weight:700;color:var(--red);margin-bottom:6px">📂 ' + topic + ' (' + words.length + ')</div>';
+    html += '<div style="margin-bottom:12px"><div style="font-size:.78rem;font-weight:700;color:var(--red);margin-bottom:6px">📂 ' + topic + ' (' + words.length + ')<\/div>';
     html += words.map(w =>
       '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--light);border:1px solid var(--border);border-radius:20px;padding:3px 9px;margin:2px;font-size:.72rem">' +
-      '<span style="font-family:\'Noto Serif SC\',serif;font-weight:700;color:var(--red)">' + w.c + '</span>' +
-      '<span style="color:var(--blue)">' + w.p + '</span>' +
-      '<span style="color:var(--muted)">' + w.v + '</span>' +
-      '<span data-hanzi="' + w.c + '" onclick="removeCustomWord(this.dataset.hanzi)" style="cursor:pointer;color:#ccc;margin-left:3px" title="Xóa">✕</span>' +
-      '</span>'
+      '<span style="font-family:\'Noto Serif SC\',serif;font-weight:700;color:var(--red)">' + w.c + '<\/span>' +
+      '<span style="color:var(--blue)">' + w.p + '<\/span>' +
+      '<span style="color:var(--muted)">' + w.v + '<\/span>' +
+      '<span data-hanzi="' + w.c + '" onclick="removeCustomWord(this.dataset.hanzi)" style="cursor:pointer;color:#ccc;margin-left:3px" title="Xóa">✕<\/span>' +
+      '<\/span>'
     ).join('');
-    html += '</div>';
+    html += '<\/div>';
   });
   body.innerHTML = html;
 }
 
 function removeCustomWord(hanzi) {
   customVocab = customVocab.filter(w => w.c !== hanzi);
-  localStorage.setItem('htv_custom', JSON.stringify(customVocab));
   Object.values(VOCAB_DATA).forEach(lv => {
     Object.keys(lv).filter(k => k.startsWith('⭐')).forEach(t => {
       lv[t] = lv[t].filter(w => w.c !== hanzi);
@@ -2430,7 +2609,6 @@ function clearImported() {
   if (!customVocab.length) return;
   if (!confirm('Xóa tất cả ' + customVocab.length + ' từ đã import?')) return;
   customVocab = [];
-  localStorage.removeItem('htv_custom');
   Object.values(VOCAB_DATA).forEach(lv => {
     Object.keys(lv).filter(k => k.startsWith('⭐')).forEach(k => delete lv[k]);
   });
@@ -2537,6 +2715,139 @@ function downloadTemplate(type) {
 }
 
 
+
+// ─── HSK2 Offline Exam Bank ───
+const HSK2_EXAMS = [
+  { // ══ ĐỀ 1 ══
+    title:'HSK 2 — Đề 1', level:2,
+    listen:{
+      L1:[
+        {id:'L1_1',cn:'她比她妈妈高一点儿。',vi:'Cô ấy cao hơn mẹ một chút.',answer:true},
+        {id:'L1_2',cn:'他们坐飞机去上海了。',vi:'Họ đi tàu hỏa đến Thượng Hải.',answer:false},
+        {id:'L1_3',cn:'今天的天气很好，没有风。',vi:'Thời tiết hôm nay rất đẹp, không có gió.',answer:true},
+        {id:'L1_4',cn:'他每天晚上学习两个小时中文。',vi:'Anh ấy học tiếng Trung hai tiếng đồng hồ mỗi sáng.',answer:false},
+        {id:'L1_5',cn:'这家店的东西很便宜，我买了很多。',vi:'Đồ ở cửa hàng này rất rẻ, tôi đã mua rất nhiều.',answer:true}
+      ],
+      L2:[
+        {id:'L2_1',audio:'我每天骑自行车上班，大概要二十分钟。',vi:'Tôi đi xe đạp đi làm mỗi ngày, mất khoảng 20 phút.',options:['坐地铁去','骑自行车去','走路去'],answer:'B'},
+        {id:'L2_2',audio:'她感冒了，医生让她多喝水，多休息，不要运动。',vi:'Cô ấy bị cảm, bác sĩ bảo uống nhiều nước, nghỉ ngơi nhiều, không tập thể dục.',options:['她发烧了','她感冒了','她肚子疼'],answer:'B'},
+        {id:'L2_3',audio:'这件衣服打折，原来一百块，现在八十块。',vi:'Áo này đang giảm giá, trước 100 tệ, nay 80 tệ.',options:['现在七十块','现在八十块','现在九十块'],answer:'B'},
+        {id:'L2_4',audio:'他学中文三年了，现在说得非常流利。',vi:'Anh ấy học tiếng Trung 3 năm, giờ nói rất lưu loát.',options:['学了两年','学了三年','学了四年'],answer:'B'},
+        {id:'L2_5',audio:'妈妈让我去超市买菜，我买了白菜和西红柿。',vi:'Mẹ nhờ tôi đi siêu thị mua rau, tôi mua bắp cải và cà chua.',options:['去了菜市场','去了超市','去了商场'],answer:'B'}
+      ],
+      L3:[
+        {id:'L3_1',s1:'你最近怎么样？看起来有点累。',s2:'是啊，最近工作太忙了，每天都要加班。',question:'她最近为什么看起来累？',options:['生病了','工作太忙加班','天气太热'],answer:'B'},
+        {id:'L3_2',s1:'周末你有什么计划？',s2:'我打算去爬山，如果天气好的话。',question:'她周末想做什么？',options:['去游泳','去爬山','去购物'],answer:'B'},
+        {id:'L3_3',s1:'这家餐厅的菜怎么样？',s2:'味道很好，价格也合理，下次我还想来。',question:'这家餐厅怎么样？',options:['菜不好吃','很贵','好吃价格合理'],answer:'C'},
+        {id:'L3_4',s1:'你学中文多久了？',s2:'差不多两年了，还在继续努力学习。',question:'她学中文多久了？',options:['一年','两年','三年'],answer:'B'},
+        {id:'L3_5',s1:'你去过北京吗？',s2:'去过，上个月刚去的，玩得很开心。',question:'她什么时候去的北京？',options:['上个周','上个月','上个年'],answer:'B'}
+      ],
+      L4:[
+        {id:'L4_1',dialogue:'甲：听说你要搬家了，是真的吗？\n乙：是的，找到一间离公司更近的房子，下个月初就搬。\n甲：那太好了！新家大吗？\n乙：比现在的大一点，有两个卧室。',question:'乙为什么要搬家？',options:['房租太贵','找到离公司更近的房子','房子太小'],answer:'B'},
+        {id:'L4_2',dialogue:'甲：你的汉语进步很快！\n乙：谢谢，我每天坚持学一个小时，还找了一个中国朋友练习口语。\n甲：这个方法很好！\n乙：是的，口语进步特别明显。',question:'乙怎么练习口语？',options:['看中文电影','找中国朋友练习','上网课'],answer:'B'},
+        {id:'L4_3',dialogue:'甲：这次考试你考得怎么样？\n乙：还不错，考了八十八分。\n甲：真厉害！上次考了多少？\n乙：上次才七十五分，这次进步了很多。',question:'乙这次考了多少分？',options:['七十五分','八十分','八十八分'],answer:'C'},
+        {id:'L4_4',dialogue:'甲：你今天怎么来这么晚？\n乙：对不起，地铁出问题了，等了半个多小时。\n甲：没关系，你吃早饭了吗？\n乙：没有，直接来了，现在肚子有点饿。',question:'乙为什么来晚了？',options:['睡过头了','路上堵车','地铁出了问题'],answer:'C'},
+        {id:'L4_5',dialogue:'甲：我想买一台新手机，你用什么牌子的？\n乙：我用华为，用了两年了，质量很好。\n甲：价格怎么样？\n乙：中档价格，三千块左右，性价比很高。',question:'乙的手机多少钱左右？',options:['两千块左右','三千块左右','四千块左右'],answer:'B'}
+      ]
+    },
+    read:{
+      R1:[
+        {id:'R1_1',word:'天气',meaning:'Thời tiết',answer:'A'},
+        {id:'R1_2',word:'医院',meaning:'Bệnh viện',answer:'B'},
+        {id:'R1_3',word:'超市',meaning:'Siêu thị',answer:'C'},
+        {id:'R1_4',word:'地铁',meaning:'Tàu điện ngầm',answer:'D'},
+        {id:'R1_5',word:'作业',meaning:'Bài tập về nhà',answer:'E'}
+      ],
+      R2:[
+        {id:'R2_1',passage:'小王每天骑车上班，虽然路上要花四十分钟，但是他觉得这样可以锻炼身体，也比较省钱。',question:'小王为什么选择骑车上班？',options:['家离公司很近','可以锻炼身体省钱','没有地铁'],answer:'B'},
+        {id:'R2_2',passage:'这家咖啡店的咖啡很好喝，环境也很安静，很适合在这里学习或者工作。',question:'这家咖啡店最适合做什么？',options:['开会聊天','学习或工作','举办派对'],answer:'B'},
+        {id:'R2_3',passage:'王老师教了二十年的数学，他的学生都很喜欢他，因为他讲课讲得很清楚，很容易理解。',question:'学生为什么喜欢王老师？',options:['王老师很年轻','他讲课清楚容易理解','他作业留得少'],answer:'B'},
+        {id:'R2_4',passage:'今年夏天特别热，最高温度达到了三十八度，很多人都选择待在家里开空调，不出门。',question:'今年夏天最高温度是多少？',options:['三十五度','三十八度','四十度'],answer:'B'},
+        {id:'R2_5',passage:'我昨天去书店买了两本书，一共花了六十块钱。书店离我家不远，走路只要十分钟。',question:'他去书店花了多少钱？',options:['四十块','五十块','六十块'],answer:'C'}
+      ],
+      R3_passage:'小张是一名上班族，他在一家外资公司做销售工作。每天早上他七点出门，坐地铁去公司，路上大概要四十五分钟。中午他一般在公司附近的餐厅吃饭，有时候也和同事一起点外卖。下班后，他有时候去健身房锻炼，有时候直接回家做饭。周末他喜欢出去旅游，已经去过国内很多城市了，下次他打算去云南。',
+      R3:[
+        {id:'R3_1',question:'小张在哪里工作？',options:['国内公司','外资公司','政府单位'],answer:'B'},
+        {id:'R3_2',question:'他每天坐什么去上班？',options:['公共汽车','骑车','地铁'],answer:'C'},
+        {id:'R3_3',question:'从家到公司要多长时间？',options:['三十分钟','四十五分钟','一个小时'],answer:'B'},
+        {id:'R3_4',question:'他中午怎么吃饭？',options:['自己带饭','在餐厅或点外卖','回家吃'],answer:'B'},
+        {id:'R3_5',question:'他下次打算去哪里旅游？',options:['北京','上海','云南'],answer:'C'}
+      ],
+      R4:[
+        {id:'R4_1',sentence:'他去年___上海出差，待了一个星期。',options:['去','到','往'],answer:'A'},
+        {id:'R4_2',sentence:'这件衣服比那件___多了，我很喜欢。',options:['好看','贵','大'],answer:'A'},
+        {id:'R4_3',sentence:'我学中文___三年了，但是还需要继续努力。',options:['已经','就','还'],answer:'A'},
+        {id:'R4_4',sentence:'她___感冒发烧，所以今天没有来上班。',options:['因为','虽然','但是'],answer:'A'},
+        {id:'R4_5',sentence:'这道题___难，我做了很久才做出来。',options:['太','很','非常'],answer:'A'}
+      ]
+    }
+  },
+  { // ══ ĐỀ 2 ══
+    title:'HSK 2 — Đề 2', level:2,
+    listen:{
+      L1:[
+        {id:'L1_1',cn:'她的个子比她哥哥矮一点。',vi:'Cô ấy thấp hơn anh trai một chút.',answer:true},
+        {id:'L1_2',cn:'他每天晚上都看一个小时的书。',vi:'Anh ấy đọc sách một tiếng đồng hồ mỗi tối.',answer:true},
+        {id:'L1_3',cn:'这家饭店的菜很好吃，但是价格有点贵。',vi:'Đồ ăn ở nhà hàng này rất ngon và giá cũng rất rẻ.',answer:false},
+        {id:'L1_4',cn:'他们是在大学认识的，现在是很好的朋友。',vi:'Họ quen nhau ở đại học, giờ là bạn bè rất thân.',answer:true},
+        {id:'L1_5',cn:'明天下午三点有个会议，大家都要参加。',vi:'Sáng mai lúc ba giờ có cuộc họp, mọi người đều phải tham dự.',answer:false}
+      ],
+      L2:[
+        {id:'L2_1',audio:'这家饭店的服务很好，菜的味道也不错，下次我还要来。',vi:'Dịch vụ nhà hàng này tốt, đồ ăn cũng không tệ, lần sau tôi sẽ đến lại.',options:['服务不好','服务很好','价格太贵'],answer:'B'},
+        {id:'L2_2',audio:'他工作很忙，最近两个月都没有好好休息过。',vi:'Anh ấy bận lắm, hai tháng gần đây không được nghỉ ngơi đàng hoàng.',options:['休息了一个月','两个月没好好休息','已经休假了'],answer:'B'},
+        {id:'L2_3',audio:'明天天气预报说有大雨，出门记得要带伞。',vi:'Dự báo thời tiết ngày mai có mưa to, ra ngoài nhớ mang ô.',options:['明天是晴天','明天有小雨','明天有大雨'],answer:'C'},
+        {id:'L2_4',audio:'她很喜欢游泳，每个星期都去游泳池游两次。',vi:'Cô ấy rất thích bơi lội, mỗi tuần đều đến bể bơi hai lần.',options:['每周去一次','每周去两次','每周去三次'],answer:'B'},
+        {id:'L2_5',audio:'李老师在图书馆工作，每天都要整理很多书。',vi:'Thầy Lý làm ở thư viện, mỗi ngày phải sắp xếp rất nhiều sách.',options:['在书店工作','在图书馆工作','在学校工作'],answer:'B'}
+      ],
+      L3:[
+        {id:'L3_1',s1:'你今天看起来不太好，哪里不舒服吗？',s2:'头有一点疼，可能是昨天睡得太晚了。',question:'他为什么头疼？',options:['感冒了','昨天睡得太晚','吃坏东西了'],answer:'B'},
+        {id:'L3_2',s1:'你们公司在哪里？交通方便吗？',s2:'在市中心，旁边就有地铁站，很方便。',question:'公司在哪里？',options:['在郊区','在市中心','在大学附近'],answer:'B'},
+        {id:'L3_3',s1:'这次出差要去几天？',s2:'三天，周三去，周五晚上回来。',question:'他出差几天？',options:['两天','三天','四天'],answer:'B'},
+        {id:'L3_4',s1:'你上次去哪里旅游了？好玩吗？',s2:'去了张家界，那里的山太美了，非常好玩！',question:'她上次去哪里旅游了？',options:['九寨沟','桂林','张家界'],answer:'C'},
+        {id:'L3_5',s1:'你给她买了什么生日礼物？',s2:'买了一条围巾，她很喜欢蓝色的。',question:'他买了什么礼物？',options:['手套','帽子','围巾'],answer:'C'}
+      ],
+      L4:[
+        {id:'L4_1',dialogue:'甲：这次旅行，你最喜欢哪个地方？\n乙：我最喜欢丽江，那里的古城很漂亮，食物也很好吃。\n甲：我也想去，下次一起去吧。\n乙：好啊，下次我们一起去！',question:'乙最喜欢哪个地方？',options:['大理','丽江','昆明'],answer:'B'},
+        {id:'L4_2',dialogue:'甲：你最近在学什么新东西吗？\n乙：我在学画画，已经学了四个月了。\n甲：学得怎么样？有没有进步？\n乙：老师说有进步，但是我觉得还需要多练习。',question:'她学画画多久了？',options:['两个月','三个月','四个月'],answer:'C'},
+        {id:'L4_3',dialogue:'甲：这次考试你考得怎么样？\n乙：不太好，只考了六十五分。\n甲：没关系，下次继续努力！\n乙：嗯，我要好好复习，下次一定要考好。',question:'乙这次考了多少分？',options:['五十五分','六十五分','七十五分'],answer:'B'},
+        {id:'L4_4',dialogue:'甲：你的新工作怎么样？适应了吗？\n乙：还不错，同事都很热情，就是下班时间有点晚。\n甲：一般几点下班？\n乙：一般要到晚上七八点才能回家。',question:'乙一般几点下班？',options:['六点','七八点','九点'],answer:'B'},
+        {id:'L4_5',dialogue:'甲：听说你要结婚了？恭喜你！\n乙：谢谢！婚礼定在下个月二十号。\n甲：婚礼在哪里举行？\n乙：在我家附近的一家酒店，离这里不远。',question:'婚礼什么时候举行？',options:['这个月','下个月二十号','下下个月'],answer:'B'}
+      ]
+    },
+    read:{
+      R1:[
+        {id:'R1_1',word:'下雨',meaning:'Trời mưa',answer:'A'},
+        {id:'R1_2',word:'感冒',meaning:'Cảm lạnh / Cúm',answer:'B'},
+        {id:'R1_3',word:'出差',meaning:'Đi công tác',answer:'C'},
+        {id:'R1_4',word:'锻炼',meaning:'Tập thể dục / Rèn luyện',answer:'D'},
+        {id:'R1_5',word:'图书馆',meaning:'Thư viện',answer:'E'}
+      ],
+      R2:[
+        {id:'R2_1',passage:'小李今年买了一辆新自行车，他每天骑车去上班。他说这样既省钱又健康，比坐地铁更舒服。',question:'小李为什么每天骑车上班？',options:['家离公司太远','骑车省钱又健康','地铁太贵'],answer:'B'},
+        {id:'R2_2',passage:'这个周末天气很好，我们一家人去公园野餐，孩子们玩得很开心，大人们也放松了很多。',question:'他们在哪里野餐？',options:['在海边','在公园','在山上'],answer:'B'},
+        {id:'R2_3',passage:'我的爷爷今年八十岁了，但是身体非常好，每天早上都去公园打太极拳，从来不生病。',question:'我的爷爷多大了？',options:['七十岁','八十岁','九十岁'],answer:'B'},
+        {id:'R2_4',passage:'她上个月买了一台新笔记本电脑，花了五千块钱，比她想象的便宜了一点。',question:'她花了多少钱买电脑？',options:['四千块','五千块','六千块'],answer:'B'},
+        {id:'R2_5',passage:'我学了两年多的汉语了，现在已经可以用汉语跟中国朋友聊天了，感觉很有成就感。',question:'她学了多久汉语？',options:['一年多','两年多','三年多'],answer:'B'}
+      ],
+      R3_passage:'小陈是一名护士，在一家大医院工作。她每天早上六点半就要出发去上班，工作非常辛苦。她负责照顾很多病人，要帮他们量体温、发药、打针。虽然工作很累，但她从来不抱怨，因为她觉得帮助病人很有意义。她的同事都很喜欢她，说她工作认真，对病人很有耐心。她最大的心愿就是希望所有的病人都能早日康复。',
+      R3:[
+        {id:'R3_1',question:'小陈是做什么工作的？',options:['医生','护士','药剂师'],answer:'B'},
+        {id:'R3_2',question:'她每天几点出发去上班？',options:['六点','六点半','七点'],answer:'B'},
+        {id:'R3_3',question:'她的工作包括什么？',options:['手术','量体温发药打针','开诊断书'],answer:'B'},
+        {id:'R3_4',question:'同事觉得她怎么样？',options:['工作懒惰','工作认真有耐心','说话太多'],answer:'B'},
+        {id:'R3_5',question:'她最大的心愿是什么？',options:['升职加薪','出国旅游','病人早日康复'],answer:'C'}
+      ],
+      R4:[
+        {id:'R4_1',sentence:'这件事和我___关系，我不想管。',options:['没有','不是','没'],answer:'A'},
+        {id:'R4_2',sentence:'她___很累，还是坚持完成了工作。',options:['虽然','因为','所以'],answer:'A'},
+        {id:'R4_3',sentence:'我___等了你半个小时了，你怎么才来？',options:['已经','还没','就'],answer:'A'},
+        {id:'R4_4',sentence:'这道菜的做法___简单，五分钟就能做好。',options:['非常','太','很'],answer:'A'},
+        {id:'R4_5',sentence:'他学习___认真，每次考试都考得很好。',options:['非常','太','比较'],answer:'A'}
+      ]
+    }
+  }
+];
+
 // ═══════════════════════════════════════════
 //  EXAM (Đề thi HSK chuẩn)
 // ═══════════════════════════════════════════
@@ -2546,6 +2857,94 @@ let examAnswers = {};
 function updateExamHero(){
   const el = document.getElementById('examHeroTitle');
   if(el) el.textContent = '📝 Đề thi HSK ' + currentLevel;
+  renderExamOptions();
+}
+
+function renderExamOptions(){
+  const struct = document.getElementById('examStructureBox');
+  if(!struct) return;
+
+  // Check if offline exams exist for this level
+  const offlineExams = (currentLevel === 2) ? HSK2_EXAMS : null;
+
+  // Remove old picker if any
+  const oldPicker = document.getElementById('examOfflinePicker');
+  if(oldPicker) oldPicker.remove();
+
+  if(offlineExams && offlineExams.length){
+    // Show offline picker above structure box
+    const picker = document.createElement('div');
+    picker.id = 'examOfflinePicker';
+    picker.className = 'card';
+    picker.style.marginBottom = '14px';
+
+    const colors = {1:'var(--hsk1)',2:'var(--hsk2)',3:'var(--hsk3)',4:'var(--hsk4)',5:'var(--hsk5)',6:'var(--hsk6)'};
+    const col = colors[currentLevel] || 'var(--red)';
+
+    picker.innerHTML = '<div class="card-header" style="background:linear-gradient(135deg,'+col+'22,#fff)">'
+      +'<h3 style="color:'+col+'">📋 Chọn đề thi offline — HSK '+currentLevel+'<\/h3>'
+      +'<span style="font-size:.72rem;color:var(--muted)">✅ Hoạt động không cần internet<\/span>'
+      +'<\/div>'
+      +'<div class="card-body">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+      + offlineExams.map(function(e,i){
+          return '<div style="border:2px solid '+col+';border-radius:12px;padding:16px;text-align:center;'
+            +'cursor:pointer;transition:all .2s;background:#fff" '
+            +' onmouseover="this.style.background=\'#eafaf1\'" onmouseout="this.style.background=\'#fff\'">'
+            +'<div style="font-size:2rem;margin-bottom:6px">📝<\/div>'
+            +'<div style="font-weight:700;font-size:.9rem;color:'+col+'">'+e.title+'<\/div>'
+            +'<div style="font-size:.72rem;color:var(--muted);margin-top:4px">40 câu · Nghe + Đọc · Offline<\/div>'
+            +'<button onclick="loadOfflineExam('+i+')" style="margin-top:10px;padding:8px 20px;background:'+col+';'
+            +'color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.84rem;font-weight:700;cursor:pointer">'
+            +'Bắt đầu →<\/button>'
+            +'<\/div>';
+        }).join('')
+      +'<\/div><\/div>';
+
+    struct.parentNode.insertBefore(picker, struct);
+
+    // Update gen button label
+    const genBtn = document.getElementById('examGenBtn');
+    if(genBtn) genBtn.textContent = '🤖 AI tạo đề khác';
+  } else {
+    // No offline — show standard AI gen UI
+    const genBtn = document.getElementById('examGenBtn');
+    if(genBtn) genBtn.textContent = '🤖 AI tạo đề thi ngay';
+  }
+}
+
+function loadOfflineExam(idx){
+  const exams = (currentLevel === 2) ? HSK2_EXAMS : null;
+  if(!exams || !exams[idx]) return;
+  examData    = exams[idx];
+  examAnswers = {};
+
+  const loading  = document.getElementById('examLoading');
+  const paper    = document.getElementById('examPaper');
+  const struct   = document.getElementById('examStructureBox');
+  const scoreBox = document.getElementById('examScoreBox');
+  const picker   = document.getElementById('examOfflinePicker');
+
+  if(loading)  loading.classList.add('hidden');
+  if(paper)    paper.classList.remove('hidden');
+  if(struct)   struct.classList.add('hidden');
+  if(scoreBox) scoreBox.classList.add('hidden');
+  if(picker)   picker.style.display = 'none';
+  document.getElementById('examSubmitRow').style.display = 'flex';
+
+  const rd = examData.read;
+  // Shuffle R1 meanings
+  const r1Shuffled = (rd.R1||[]).map(function(q){ return q.meaning; }).slice().sort(function(){ return Math.random()-.5; });
+
+  document.getElementById('listenQuestions').innerHTML =
+    renderL1(examData.listen.L1||[]) + renderL2(examData.listen.L2||[]) +
+    renderL3(examData.listen.L3||[]) + renderL4(examData.listen.L4||[]);
+  document.getElementById('readQuestions').innerHTML =
+    renderR1(rd.R1||[], r1Shuffled) + renderR2(rd.R2||[]) +
+    renderR3(rd.R3_passage||'', rd.R3||[]) + renderR4(rd.R4||[]);
+
+  updateAnsweredCount();
+  document.getElementById('examPaper').scrollIntoView({behavior:'smooth'});
 }
 
 function toggleExamSection(sec){
@@ -2631,43 +3030,43 @@ function renderExam(){
 
 function pHdr(icon,title,n,col){
   return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin:14px 0 8px">'
-    +'<div style="font-size:.82rem;font-weight:800;color:'+col+'">'+icon+' '+title+'</div>'
-    +'<span style="background:'+col+';color:#fff;border-radius:10px;padding:2px 9px;font-size:.68rem;font-weight:700">'+n+' câu</span></div>';
+    +'<div style="font-size:.82rem;font-weight:800;color:'+col+'">'+icon+' '+title+'<\/div>'
+    +'<span style="background:'+col+';color:#fff;border-radius:10px;padding:2px 9px;font-size:.68rem;font-weight:700">'+n+' câu<\/span><\/div>';
 }
 
 function optBtns(qId,opts){
   var html='<div class="eq-opts">';
   ['A','B','C'].forEach(function(k,i){
-    html+='<button class="eq-opt" onclick="selOpt(this,\"'+qId+'\",\"'+k+'\")">'
-      +'<span class="opt-key">'+k+'</span>'+(opts[i]||'')+'</button>';
+    html+='<button class="eq-opt" onclick="selOpt(this,\''+qId+'\',\''+k+'\')">'
+      +'<span class="opt-key">'+k+'<\/span>'+(opts[i]||'')+'<\/button>';
   });
-  return html+'</div>';
+  return html+'<\/div>';
 }
 
 function audioBtn(text,dur){
   var safe=text.split("'").join("\'").split("\n").join('，');
-  return '<button class="eq-audio-btn" onclick="speakChinese(\''+safe+'\');this.classList.add(\'playing\');setTimeout(function(){this.classList.remove(\'playing\')}.bind(this),'+dur+')">🔊</button>';
+  return '<button class="eq-audio-btn" onclick="speakChinese(\''+safe+'\');this.classList.add(\'playing\');setTimeout(function(){this.classList.remove(\'playing\')}.bind(this),'+dur+')">🔊<\/button>';
 }
 
 function renderL1(qs){
   var h=pHdr('🔊','Phần 1 — Đúng / Sai','5','var(--red)');
-  h+='<div style="background:#fff8e1;border:1px solid #f0c040;border-radius:10px;padding:8px 12px;font-size:.76rem;color:#7a5c00;margin-bottom:10px">💡 Nhấn 🔊 để nghe. Chọn Đúng hoặc Sai.</div>';
+  h+='<div style="background:#fff8e1;border:1px solid #f0c040;border-radius:10px;padding:8px 12px;font-size:.76rem;color:#7a5c00;margin-bottom:10px">💡 Nhấn 🔊 để nghe. Chọn Đúng hoặc Sai.<\/div>';
   qs.forEach(function(q){
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
       +audioBtn(q.cn,2500)
       +'<div class="eq-tfjudge">'
-      +'<button id="btn_'+q.id+'_T" onclick="selTF(this,\"'+q.id+'\",true)">✅ Đúng</button>'
-      +'<button id="btn_'+q.id+'_F" onclick="selTF(this,\"'+q.id+'\",false)">❌ Sai</button>'
-      +'</div></div>';
+      +'<button id="btn_'+q.id+'_T" onclick="selTF(this,\''+q.id+'\',true)">✅ Đúng<\/button>'
+      +'<button id="btn_'+q.id+'_F" onclick="selTF(this,\''+q.id+'\',false)">❌ Sai<\/button>'
+      +'<\/div><\/div>';
   });
   return h;
 }
 function renderL2(qs){
   let h=pHdr('🔊','Phần 2 — Nghe & Chọn đáp án','5','var(--red)');
   qs.forEach(q=>{
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
       +audioBtn(q.audio,3500)
-      +optBtns(q.id,q.options)+'</div>';
+      +optBtns(q.id,q.options)+'<\/div>';
   });
   return h;
 }
@@ -2676,11 +3075,11 @@ function renderL3(qs){
   var h=pHdr('🔊','Phần 3 — Hội thoại ngắn & Chọn đáp án','5','var(--red)');
   qs.forEach(function(q){
     var dlg='甲：'+q.s1+'乙：'+q.s2;
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
       +audioBtn(dlg,4500)
-      +'<div class="eq-text" style="font-size:.82rem;margin-bottom:8px"><div>甲：'+q.s1+'</div><div>乙：'+q.s2+'</div></div>'
-      +'<div class="eq-text vi">'+q.question+'</div>'
-      +optBtns(q.id,q.options)+'</div>';
+      +'<div class="eq-text" style="font-size:.82rem;margin-bottom:8px"><div>甲：'+q.s1+'<\/div><div>乙：'+q.s2+'<\/div><\/div>'
+      +'<div class="eq-text vi">'+q.question+'<\/div>'
+      +optBtns(q.id,q.options)+'<\/div>';
   });
   return h;
 }
@@ -2688,47 +3087,47 @@ function renderL4(qs){
   var h=pHdr('🔊','Phần 4 — Hội thoại & Câu hỏi','5','var(--red)');
   qs.forEach(function(q){
     var dlg=(q.dialogue||'').split('\n').join('，');
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
       +audioBtn(dlg,5500)
-      +'<div class="eq-text" style="font-size:.8rem;margin-bottom:8px">'+(q.dialogue||'').split('\n').join('<br>')+'</div>'
-      +'<div class="eq-text vi">'+q.question+'</div>'
-      +optBtns(q.id,q.options)+'</div>';
+      +'<div class="eq-text" style="font-size:.8rem;margin-bottom:8px">'+(q.dialogue||'').split('\n').join('<br>')+'<\/div>'
+      +'<div class="eq-text vi">'+q.question+'<\/div>'
+      +optBtns(q.id,q.options)+'<\/div>';
   });
   return h;
 }
 function renderR1(qs,shuffled){
   var keys=['A','B','C','D','E'];
   var h=pHdr('📖','Phần 1 — Ghép từ với nghĩa','5','var(--blue)');
-  h+='<div style="background:#fff8e1;border:1px solid #f0c040;border-radius:10px;padding:8px 12px;font-size:.76rem;color:#7a5c00;margin-bottom:10px">💡 Ghép mỗi chữ Hán với nghĩa tương ứng.</div>';
+  h+='<div style="background:#fff8e1;border:1px solid #f0c040;border-radius:10px;padding:8px 12px;font-size:.76rem;color:#7a5c00;margin-bottom:10px">💡 Ghép mỗi chữ Hán với nghĩa tương ứng.<\/div>';
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
   h+='<div>';
   qs.forEach(function(q,i){
     h+='<div class="eq-card" style="margin-bottom:8px;padding:10px 12px">'
-      +'<div class="eq-num">Câu '+q.id+'</div>'
-      +'<div class="eq-text" style="font-size:1.5rem;margin-bottom:6px">'+q.word+'</div>'
+      +'<div class="eq-num">Câu '+q.id+'<\/div>'
+      +'<div class="eq-text" style="font-size:1.5rem;margin-bottom:6px">'+q.word+'<\/div>'
       +'<select data-qid="'+q.id+'" onchange="examAnswers[this.dataset.qid]=this.value;updateAnsweredCount()" '
       +'style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:6px;font-family:inherit;font-size:.78rem;outline:none;background:var(--light)">'
-      +'<option value="">-- Chọn nghĩa --</option>'
-      +keys.map(function(k,j){ return '<option value="'+k+'">'+k+'. '+shuffled[j]+'</option>'; }).join('')
-      +'</select></div>';
+      +'<option value="">-- Chọn nghĩa --<\/option>'
+      +keys.map(function(k,j){ return '<option value="'+k+'">'+k+'. '+shuffled[j]+'<\/option>'; }).join('')
+      +'<\/select><\/div>';
   });
-  h+='</div>';
+  h+='<\/div>';
   h+='<div style="background:var(--light);border-radius:12px;padding:12px;border:1px solid var(--border)">';
-  h+='<div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:8px">DANH SÁCH NGHĨA</div>';
+  h+='<div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:8px">DANH SÁCH NGHĨA<\/div>';
   shuffled.forEach(function(m,i){
     h+='<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:.8rem">'
-      +'<strong>'+keys[i]+'.</strong> '+m+'</div>';
+      +'<strong>'+keys[i]+'.<\/strong> '+m+'<\/div>';
   });
-  h+='</div></div>';
+  h+='<\/div><\/div>';
   return h;
 }
 function renderR2(qs){
   let h=pHdr('📖','Phần 2 — Đọc & Chọn đáp án','5','var(--blue)');
   qs.forEach(q=>{
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
-      +'<div class="eq-text" style="background:var(--light);border-radius:8px;padding:10px;margin-bottom:10px;font-size:.9rem;line-height:1.6">'+q.passage+'</div>'
-      +'<div class="eq-text vi" style="margin-bottom:8px">'+q.question+'</div>'
-      +optBtns(q.id,q.options)+'</div>';
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
+      +'<div class="eq-text" style="background:var(--light);border-radius:8px;padding:10px;margin-bottom:10px;font-size:.9rem;line-height:1.6">'+q.passage+'<\/div>'
+      +'<div class="eq-text vi" style="margin-bottom:8px">'+q.question+'<\/div>'
+      +optBtns(q.id,q.options)+'<\/div>';
   });
   return h;
 }
@@ -2736,29 +3135,29 @@ function renderR2(qs){
 function renderR3(passage,qs){
   var h=pHdr('📖','Phần 3 — Đọc đoạn văn & Trả lời','5','var(--blue)');
   h+='<div class="eq-card" style="background:#f0f9ff;border-color:#aed6f1;margin-bottom:12px">'
-    +'<div style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:8px">📄 ĐỌC ĐOẠN VĂN SAU</div>'
-    +'<div class="eq-text" style="font-size:.9rem;line-height:1.7">'+passage+'</div>'
-    +'<button onclick="speakChinese(this.dataset.t)" data-t="'+passage.split('"').join('&quot;')+'" style="margin-top:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-family:inherit;font-size:.76rem;cursor:pointer">🔊 Nghe đoạn văn</button>'
-    +'</div>';
+    +'<div style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:8px">📄 ĐỌC ĐOẠN VĂN SAU<\/div>'
+    +'<div class="eq-text" style="font-size:.9rem;line-height:1.7">'+passage+'<\/div>'
+    +'<button onclick="speakChinese(this.dataset.t)" data-t="'+passage.split('"').join('&quot;')+'" style="margin-top:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-family:inherit;font-size:.76rem;cursor:pointer">🔊 Nghe đoạn văn<\/button>'
+    +'<\/div>';
   qs.forEach(function(q){
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
-      +'<div class="eq-text vi" style="margin-bottom:8px">'+q.question+'</div>'
-      +optBtns(q.id,q.options)+'</div>';
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
+      +'<div class="eq-text vi" style="margin-bottom:8px">'+q.question+'<\/div>'
+      +optBtns(q.id,q.options)+'<\/div>';
   });
   return h;
 }
 function renderR4(qs){
   var h=pHdr('📖','Phần 4 — Điền từ vào chỗ trống','5','var(--blue)');
   qs.forEach(function(q){
-    var disp=(q.sentence||'').replace('___','<span style="color:var(--red);font-weight:900;font-size:1.1rem">＿＿</span>');
-    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'</div>'
-      +'<div class="eq-text" style="margin-bottom:10px">'+disp+'</div>'
+    var disp=(q.sentence||'').replace('___','<span style="color:var(--red);font-weight:900;font-size:1.1rem">＿＿<\/span>');
+    h+='<div class="eq-card"><div class="eq-num">Câu '+q.id+'<\/div>'
+      +'<div class="eq-text" style="margin-bottom:10px">'+disp+'<\/div>'
       +'<div class="eq-opts">'+['A','B','C'].map(function(k,i){
-        return '<button class="eq-opt" onclick="selOpt(this,\"'+q.id+'\",\"'+k+'\")">'
-          +'<span class="opt-key">'+k+'</span>'
-          +'<span style="font-family:\'Noto Serif SC\',serif;font-weight:700">'+(q.options[i]||'')+'</span>'
-          +'</button>';
-      }).join('')+'</div></div>';
+        return '<button class="eq-opt" onclick="selOpt(this,\''+q.id+'\',\''+k+'\')">'
+          +'<span class="opt-key">'+k+'<\/span>'
+          +'<span style="font-family:\'Noto Serif SC\',serif;font-weight:700">'+(q.options[i]||'')+'<\/span>'
+          +'<\/button>';
+      }).join('')+'<\/div><\/div>';
   });
   return h;
 }
@@ -2831,6 +3230,16 @@ function submitExam(){
   document.getElementById('xpBadge').textContent='⭐ '+totalXP+' XP';
 }
 
+function backToExamList(){
+  const paper  = document.getElementById('examPaper');
+  const struct = document.getElementById('examStructureBox');
+  const picker = document.getElementById('examOfflinePicker');
+  if(paper)  paper.classList.add('hidden');
+  if(struct) struct.classList.remove('hidden');
+  if(picker) picker.style.display = 'block';
+  examAnswers = {}; examData = null;
+}
+
 function showExamHistory(){ alert('Tính năng lịch sử đề thi sẽ được thêm sớm!'); }
 
 // ═══════════════════════════════════════════
@@ -2876,9 +3285,9 @@ function populatePracTopicFilter(){
   const topics = Object.keys(data);
   const total  = Object.values(data).flat().length;
   sel.innerHTML =
-    '<option value="__all__">📚 Tất cả chủ đề (' + total + ' từ)</option>'
+    '<option value="__all__">📚 Tất cả chủ đề (' + total + ' từ)<\/option>'
     + topics.map(t =>
-        '<option value="' + t + '">' + t + ' (' + data[t].length + ' từ)</option>'
+        '<option value="' + t + '">' + t + ' (' + data[t].length + ' từ)<\/option>'
       ).join('');
 }
 
@@ -2944,7 +3353,7 @@ function showPracQuestion(){
 
   if(pracMode === 1){
     // VN → CN: hiện tiếng Việt, nhập chữ Hán hoặc Pinyin
-    const badge1 = pracUseEx ? ' <small style="background:var(--gold);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Câu hoàn chỉnh</small>' : ' <small style="background:var(--blue);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Từ đơn</small>';
+    const badge1 = pracUseEx ? ' <small style="background:var(--gold);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Câu hoàn chỉnh<\/small>' : ' <small style="background:var(--blue);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Từ đơn<\/small>';
     label.innerHTML = '🇻🇳 Dịch sang tiếng Trung' + badge1;
     qEl.className = 'prac-question vi';
     if(pracUseEx){
@@ -2961,7 +3370,7 @@ function showPracQuestion(){
 
   } else {
     // CN → Pinyin: hiện chữ Hán, nhập Pinyin
-    const badge2 = (hasEx && pracUseEx) ? ' <small style="background:var(--gold);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Câu hoàn chỉnh</small>' : ' <small style="background:var(--blue);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Từ đơn</small>';
+    const badge2 = (hasEx && pracUseEx) ? ' <small style="background:var(--gold);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Câu hoàn chỉnh<\/small>' : ' <small style="background:var(--blue);color:#fff;border-radius:8px;padding:1px 7px;font-size:.65rem;margin-left:4px">Từ đơn<\/small>';
     label.innerHTML = '🇨🇳 Đọc Pinyin của chữ / câu này' + badge2;
     qEl.className = 'prac-question';
     if(hasEx && Math.random() < 0.5){
@@ -3081,14 +3490,14 @@ function checkPractice(){
   if(tip){
     if(!isCorrect){
       tip.innerHTML = '💡 Đáp án: <strong style="font-family:\'Noto Serif SC\',serif;color:var(--red);font-size:1.1rem">'
-        + correctCN + '</strong> &nbsp; <span style="color:var(--blue)">' + correctPY + '</span>'
-        + '<br><em style="color:var(--muted)">' + displayVI + '</em>'
-        + (pracUseEx && w.ex ? '' : '<br>📖 Ví dụ: <strong>' + (w.ex||'') + '</strong> <em>' + (w.exv||'') + '</em>');
+        + correctCN + '<\/strong> &nbsp; <span style="color:var(--blue)">' + correctPY + '<\/span>'
+        + '<br><em style="color:var(--muted)">' + displayVI + '<\/em>'
+        + (pracUseEx && w.ex ? '' : '<br>📖 Ví dụ: <strong>' + (w.ex||'') + '<\/strong> <em>' + (w.exv||'') + '<\/em>');
     } else {
       tip.innerHTML = '🎉 Chính xác! '
         + (pracUseEx
-            ? '<em>' + displayVI + '</em>'
-            : 'Ví dụ: <strong style="font-family:\'Noto Serif SC\',serif">' + (w.ex||w.c) + '</strong> <em>(' + (w.exv||w.v) + ')</em>');
+            ? '<em>' + displayVI + '<\/em>'
+            : 'Ví dụ: <strong style="font-family:\'Noto Serif SC\',serif">' + (w.ex||w.c) + '<\/strong> <em>(' + (w.exv||w.v) + ')<\/em>');
     }
     tip.style.display = 'block';
   }
@@ -3250,7 +3659,7 @@ function skipQuiz(){
     // Hiển thị đáp án đầy đủ
     if(res){
       res.className = 'qres show ng';
-      res.innerHTML = '⏭ Bỏ qua — Đáp án: <strong>' + w.c + '</strong> (' + w.p + ') = ' + w.v;
+      res.innerHTML = '⏭ Bỏ qua — Đáp án: <strong>' + w.c + '<\/strong> (' + w.p + ') = ' + w.v;
     }
 
     // Đọc to đáp án
@@ -3284,9 +3693,9 @@ function loadVoices(){
   if(!sel) return;
   const cnV = ttsVoices.filter(v => v.lang.startsWith('zh') || v.lang.includes('cmn'));
   const pool = cnV.length ? cnV : ttsVoices;
-  if(!pool.length){ sel.innerHTML='<option value="">Không có giọng TTS</option>'; return; }
+  if(!pool.length){ sel.innerHTML='<option value="">Không có giọng TTS<\/option>'; return; }
   sel.innerHTML = pool.map((v,i)=>
-    `<option value="${i}">${v.name.replace('Google','G.').slice(0,24)} [${v.lang}]</option>`
+    `<option value="${i}">${v.name.replace('Google','G.').slice(0,24)} [${v.lang}]<\/option>`
   ).join('');
   // Auto-select Google Chinese
   const gi = pool.findIndex(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('zh'));
@@ -3568,6 +3977,66 @@ window.onload = function(){
       </p>
     </div>
   </div>
+
+  <!-- ── Sync & Backup ── -->
+  <div class="card" style="border-color:var(--gold);background:linear-gradient(135deg,#fffdf0,#fff)">
+    <div class="card-header" style="background:#fffbef;border-bottom-color:#f0e0a0">
+      <h3>🔄 Đồng bộ dữ liệu giữa các máy</h3>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
+        Từ vựng import chỉ tồn tại trong phiên làm việc hiện tại (mất khi tải lại trang) —
+        máy khác cũng sẽ không thấy. Dùng một trong các cách bên dưới để lưu lại và đồng bộ.
+      </p>
+
+      <!-- Cách 1: Xuất HTML kèm data -->
+      <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:12px;padding:14px;margin-bottom:12px">
+        <div style="font-size:.82rem;font-weight:700;color:var(--green);margin-bottom:6px">
+          ⭐ Cách 1 — Xuất file HTML kèm data (khuyên dùng)
+        </div>
+        <p style="font-size:.76rem;color:#2e7d32;margin-bottom:10px;line-height:1.5">
+          Tạo file HTML mới chứa <strong>toàn bộ từ vựng đã import</strong>. Upload file này lên GitHub Pages / Netlify → 
+          mọi người dùng chung, không cần import lại.
+        </p>
+        <button onclick="exportHTMLWithData()" style="width:100%;padding:11px;background:var(--green);
+          color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.86rem;
+          font-weight:700;cursor:pointer;transition:all .15s" onmouseover="this.style.background='#1e8449'"
+          onmouseout="this.style.background='var(--green)'">
+          📦 Xuất file HTML kèm toàn bộ data
+        </button>
+        <div id="htvExportStatus" style="display:none;margin-top:10px;padding:9px 13px;
+          border-radius:9px;font-size:.78rem;font-weight:700"></div>
+        <div style="font-size:.7rem;color:#2e7d32;margin-top:8px;opacity:.8">
+          ✅ Upload file mới lên GitHub → commit → ai mở link cũng thấy đủ data
+        </div>
+      </div>
+
+      <!-- Cách 2: Export/Import JSON -->
+      <div style="background:#ebf5fb;border:1px solid #aed6f1;border-radius:12px;padding:14px">
+        <div style="font-size:.82rem;font-weight:700;color:var(--blue);margin-bottom:6px">
+          📋 Cách 2 — Backup/Restore JSON
+        </div>
+        <p style="font-size:.76rem;color:#1a5276;margin-bottom:10px;line-height:1.5">
+          Xuất file JSON chứa data → lưu vào Google Drive / USB → mở máy khác, import JSON vào là xong.
+        </p>
+        <div style="display:flex;gap:8px">
+          <button onclick="exportJSON()" style="flex:1;padding:10px;background:var(--blue);
+            color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.82rem;
+            font-weight:600;cursor:pointer">⬇️ Xuất JSON</button>
+          <label style="flex:1;display:flex">
+            <input type="file" id="jsonImportFile" accept=".json" onchange="importJSON(this)"
+              style="display:none">
+            <button onclick="document.getElementById('jsonImportFile').click()"
+              style="flex:1;padding:10px;background:#fff;border:1.5px solid var(--blue);
+              color:var(--blue);border-radius:10px;font-family:inherit;font-size:.82rem;
+              font-weight:600;cursor:pointer">⬆️ Nạp JSON</button>
+          </label>
+        </div>
+        <div id="jsonStatus" style="font-size:.74rem;color:var(--muted);margin-top:8px;display:none"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ══════════ PRACTICE ══════════ -->
@@ -3665,83 +4134,58 @@ window.onload = function(){
   <!-- Hero -->
   <div class="exam-hero">
     <h2 id="examHeroTitle">📝 Đề thi HSK 1</h2>
-    <p>Cấu trúc chuẩn · AI sinh đề theo trình độ</p>
+    <p>Cấu trúc chuẩn · 40 câu · Nghe hiểu + Đọc hiểu</p>
     <div class="exam-meta">
       <div class="exam-meta-item"><div class="num">40</div><div class="lbl">Câu hỏi</div></div>
       <div class="exam-meta-item"><div class="num">~32</div><div class="lbl">Phút</div></div>
-      <div class="exam-meta-item"><div class="num">2</div><div class="lbl">Phần thi</div></div>
+      <div class="exam-meta-item"><div class="num">2</div><div class="lbl">Đề/cấp</div></div>
     </div>
   </div>
 
-  <!-- Cấu trúc đề & nút tạo đề -->
+  <!-- Chọn đề -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-header"><h3>📋 Chọn đề thi</h3></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="examPickerGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Cấu trúc đề -->
   <div class="exam-structure" id="examStructureBox">
-    <!-- Nghe hiểu -->
     <div class="exam-section-hdr" style="background:#fdf0ee" onclick="toggleExamSection('listen')">
       <span style="color:var(--red)">🎧 Nghe hiểu</span>
       <span style="font-size:.75rem;color:var(--muted);margin-left:auto">15 phút · 20 câu ▼</span>
     </div>
     <div id="examSection-listen" class="exam-section-body">
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 1 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Nghe câu trần thuật + xem hình ảnh mô tả. Chọn Đúng / Sai.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 2 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Nghe mô tả, chọn 1 trong 3 đáp án A/B/C phù hợp.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 3 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Nghe đoạn hội thoại ngắn, chọn đáp án đúng trong 3 lựa chọn.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 4 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Nghe hội thoại + câu hỏi, chọn 1 trong 3 đáp án đúng nhất.</div>
-      </div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 1 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Nghe câu, chọn Đúng / Sai.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 2 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Nghe mô tả, chọn đáp án A/B/C.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 3 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Nghe hội thoại ngắn, chọn đáp án A/B/C.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 4 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Nghe hội thoại + câu hỏi, chọn đáp án.</div></div>
     </div>
-
-    <!-- Đọc hiểu -->
     <div class="exam-section-hdr" style="background:#ebf5fb;border-top:1px solid var(--border)" onclick="toggleExamSection('read')">
       <span style="color:var(--blue)">📖 Đọc hiểu</span>
       <span style="font-size:.75rem;color:var(--muted);margin-left:auto">17 phút · 20 câu ▼</span>
     </div>
     <div id="examSection-read" class="exam-section-body">
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 1 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Ghép từ vựng với mô tả / nghĩa tương ứng.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 2 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Đọc thông tin, chọn đáp án A/B/C đúng.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 3 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Đọc đoạn văn, trả lời 5 câu hỏi trắc nghiệm.</div>
-      </div>
-      <div class="exam-part">
-        <div class="exam-part-hdr">Phần 4 <span class="exam-part-count">5 câu</span></div>
-        <div class="exam-part-desc">Điền từ thích hợp vào chỗ trống.</div>
-      </div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 1 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Ghép từ vựng với nghĩa tương ứng.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 2 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Đọc thông tin, chọn đáp án A/B/C.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 3 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Đọc đoạn văn, trả lời 5 câu hỏi.</div></div>
+      <div class="exam-part"><div class="exam-part-hdr">Phần 4 <span class="exam-part-count">5 câu</span></div>
+        <div class="exam-part-desc">Điền từ thích hợp vào chỗ trống.</div></div>
     </div>
-
-    <!-- Nút tạo đề -->
-    <div style="padding:16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="exam-submit-btn" onclick="generateExam()" id="examGenBtn"
-        style="flex:2">🤖 AI tạo đề thi ngay</button>
-      <button onclick="showExamHistory()" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);
-        border-radius:10px;background:#fff;font-family:inherit;font-size:.86rem;cursor:pointer;color:var(--muted)">
-        📋 Lịch sử</button>
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div class="exam-loading hidden" id="examLoading">
-    <div class="spin">⏳</div>
-    <p style="margin-top:10px;font-size:.86rem" id="examLoadingText">AI đang soạn đề thi...</p>
   </div>
 
   <!-- Exam paper -->
   <div id="examPaper" class="hidden">
-    <!-- Score box (shown after submit) -->
     <div class="exam-score-box hidden" id="examScoreBox">
       <div class="big-score" id="examScoreNum">0/40</div>
       <div class="score-label" id="examScoreLabel">Hoàn thành đề thi</div>
@@ -3749,29 +4193,20 @@ window.onload = function(){
         <div class="ess-item"><div class="ess-n" id="listenScore">0/20</div><div class="ess-l">🎧 Nghe hiểu</div></div>
         <div class="ess-item"><div class="ess-n" id="readScore">0/20</div><div class="ess-l">📖 Đọc hiểu</div></div>
       </div>
-      <button onclick="generateExam()" style="margin-top:14px;padding:10px 20px;background:var(--red);
-        color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer;">
-        🔄 Tạo đề mới
-      </button>
+      <button onclick="backToExamList()" style="margin-top:14px;padding:10px 20px;background:var(--red);
+        color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer">
+        ← Chọn đề khác</button>
     </div>
-
-    <!-- Listening section -->
-    <div style="background:linear-gradient(135deg,#fdf0ee,#fff);border:1px solid #f5cac3;
-      border-radius:14px;padding:14px 16px;margin-bottom:10px;">
-      <div style="font-size:.92rem;font-weight:800;color:var(--red);margin-bottom:2px">🎧 PHẦN NGHE HIỂU</div>
-      <div style="font-size:.74rem;color:var(--muted)">Nhấn 🔊 để nghe từng câu · 15 phút</div>
+    <div style="background:linear-gradient(135deg,#fdf0ee,#fff);border:1px solid #f5cac3;border-radius:14px;padding:14px 16px;margin-bottom:10px">
+      <div style="font-size:.92rem;font-weight:800;color:var(--red)">🎧 PHẦN NGHE HIỂU</div>
+      <div style="font-size:.74rem;color:var(--muted)">Nhấn 🔊 để nghe · 15 phút</div>
     </div>
     <div id="listenQuestions"></div>
-
-    <!-- Reading section -->
-    <div style="background:linear-gradient(135deg,#ebf5fb,#fff);border:1px solid #aed6f1;
-      border-radius:14px;padding:14px 16px;margin-bottom:10px;margin-top:6px;">
-      <div style="font-size:.92rem;font-weight:800;color:var(--blue);margin-bottom:2px">📖 PHẦN ĐỌC HIỂU</div>
-      <div style="font-size:.74rem;color:var(--muted)">Đọc kỹ câu hỏi và lựa chọn · 17 phút</div>
+    <div style="background:linear-gradient(135deg,#ebf5fb,#fff);border:1px solid #aed6f1;border-radius:14px;padding:14px 16px;margin:6px 0 10px">
+      <div style="font-size:.92rem;font-weight:800;color:var(--blue)">📖 PHẦN ĐỌC HIỂU</div>
+      <div style="font-size:.74rem;color:var(--muted)">Đọc kỹ và chọn đáp án · 17 phút</div>
     </div>
     <div id="readQuestions"></div>
-
-    <!-- Submit -->
     <div class="exam-submit-row" id="examSubmitRow">
       <div style="flex:1;font-size:.8rem;color:var(--muted)" id="examAnsweredCount">Đã trả lời: 0/40</div>
       <button class="exam-submit-btn" onclick="submitExam()">📊 Nộp bài & Chấm điểm</button>
@@ -3779,6 +4214,5 @@ window.onload = function(){
   </div>
 
 </div>
-
 </body>
 </html>
